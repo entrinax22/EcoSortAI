@@ -1,43 +1,60 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { router } from 'expo-router';
+
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const theme = useColorScheme() ?? 'light';
+  const c = Colors[theme];
+
   const handleRegister = () => {
-    // Navigate back to home upon successful registration logic
     router.replace('/');
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: c.background }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <IconSymbol size={24} name="chevron.left" color="#0F172A" />
+        <TouchableOpacity
+          style={[styles.backButton, { backgroundColor: c.surface, borderColor: c.border }]}
+          onPress={() => router.back()}
+          activeOpacity={0.85}>
+          <IconSymbol size={24} name="chevron.left" color={c.text} />
         </TouchableOpacity>
-        
+
         <View style={styles.headerContainer}>
-          <ThemedText style={styles.title}>Join the Movement</ThemedText>
-          <ThemedText style={styles.subtitle}>Create an account and start making an impact today.</ThemedText>
+          <ThemedText style={[styles.title, { color: c.text }]}>Join the Movement</ThemedText>
+          <ThemedText style={[styles.subtitle, { color: c.mutedText }]}>
+            Create an account and start making an impact today.
+          </ThemedText>
         </View>
 
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Full Name</ThemedText>
-            <View style={styles.inputContainer}>
-              <IconSymbol size={20} name="person.fill" color="#94A3B8" />
-              <TextInput 
-                style={styles.input}
+            <ThemedText style={[styles.label, { color: c.text }]}>Full Name</ThemedText>
+            <View style={[styles.inputContainer, { backgroundColor: c.surface, borderColor: c.border }]}>
+              <IconSymbol size={20} name="person.fill" color={c.mutedText} />
+              <TextInput
+                style={[styles.input, { color: c.text }]}
                 placeholder="Alex Johnson"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={c.mutedText}
                 value={name}
                 onChangeText={setName}
               />
@@ -45,13 +62,13 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Email Address</ThemedText>
-            <View style={styles.inputContainer}>
-              <IconSymbol size={20} name="envelope.fill" color="#94A3B8" />
-              <TextInput 
-                style={styles.input}
+            <ThemedText style={[styles.label, { color: c.text }]}>Email Address</ThemedText>
+            <View style={[styles.inputContainer, { backgroundColor: c.surface, borderColor: c.border }]}>
+              <IconSymbol size={20} name="envelope.fill" color={c.mutedText} />
+              <TextInput
+                style={[styles.input, { color: c.text }]}
                 placeholder="eco@warrior.com"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={c.mutedText}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -61,13 +78,13 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.label}>Password</ThemedText>
-            <View style={styles.inputContainer}>
-              <IconSymbol size={20} name="lock.fill" color="#94A3B8" />
-              <TextInput 
-                style={styles.input}
+            <ThemedText style={[styles.label, { color: c.text }]}>Password</ThemedText>
+            <View style={[styles.inputContainer, { backgroundColor: c.surface, borderColor: c.border }]}>
+              <IconSymbol size={20} name="lock.fill" color={c.mutedText} />
+              <TextInput
+                style={[styles.input, { color: c.text }]}
                 placeholder="••••••••"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={c.mutedText}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -75,15 +92,18 @@ export default function RegisterScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <TouchableOpacity
+            style={[styles.registerButton, { backgroundColor: c.brand, shadowColor: c.brand }]}
+            onPress={handleRegister}
+            activeOpacity={0.9}>
             <ThemedText style={styles.registerButtonText}>Create Account</ThemedText>
             <IconSymbol size={20} name="arrow.right" color="#FFF" />
           </TouchableOpacity>
 
           <View style={styles.footerContainer}>
-            <ThemedText style={styles.footerText}>Already have an account? </ThemedText>
-            <TouchableOpacity onPress={() => router.push('/login')}>
-              <ThemedText style={styles.footerLink}>Sign In</ThemedText>
+            <ThemedText style={[styles.footerText, { color: c.mutedText }]}>Already have an account? </ThemedText>
+            <TouchableOpacity onPress={() => router.push('/login')} activeOpacity={0.85}>
+              <ThemedText style={[styles.footerLink, { color: c.accent }]}>Sign In</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -93,106 +113,97 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#F8FAFC' 
+  container: {
+    flex: 1,
   },
-  scrollContent: { 
-    flexGrow: 1, 
-    padding: 24, 
-    paddingTop: 60 
+  scrollContent: {
+    flexGrow: 1,
+    padding: 24,
+    paddingTop: 60,
   },
-  backButton: { 
-    width: 48, 
-    height: 48, 
-    borderRadius: 24, 
-    backgroundColor: '#FFFFFF', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.05, 
-    shadowRadius: 5, 
-    elevation: 2, 
-    marginBottom: 32 
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+    marginBottom: 32,
   },
-  headerContainer: { 
-    marginBottom: 40 
+  headerContainer: {
+    marginBottom: 40,
   },
-  title: { 
-    fontSize: 32, 
-    fontWeight: 'bold', 
-    color: '#0F172A', 
-    marginBottom: 8 
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    letterSpacing: -0.4,
   },
-  subtitle: { 
-    fontSize: 16, 
-    color: '#64748B', 
-    lineHeight: 24 
+  subtitle: {
+    fontSize: 16,
+    lineHeight: 24,
   },
-  formContainer: { 
-    flex: 1 
+  formContainer: {
+    flex: 1,
   },
-  inputGroup: { 
-    marginBottom: 20 
+  inputGroup: {
+    marginBottom: 20,
   },
-  label: { 
-    fontSize: 14, 
-    fontWeight: '600', 
-    color: '#1E293B', 
-    marginBottom: 8 
+  label: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
   },
-  inputContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    backgroundColor: '#FFFFFF', 
-    borderRadius: 16, 
-    paddingHorizontal: 16, 
-    height: 60, 
-    borderWidth: 1, 
-    borderColor: '#E2E8F0' 
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    height: 60,
+    borderWidth: 1,
   },
-  input: { 
-    flex: 1, 
-    marginLeft: 12, 
-    fontSize: 16, 
-    color: '#0F172A' 
+  input: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 16,
   },
-  registerButton: { 
-    flexDirection: 'row', 
-    backgroundColor: '#10B981', // Vibrant Emerald for registration
-    borderRadius: 16, 
-    height: 60, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    shadowColor: '#10B981', 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.3, 
-    shadowRadius: 8, 
-    elevation: 5, 
-    marginTop: 12, 
-    marginBottom: 32 
+  registerButton: {
+    flexDirection: 'row',
+    borderRadius: 16,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.28,
+    shadowRadius: 8,
+    elevation: 5,
+    marginTop: 12,
+    marginBottom: 32,
   },
-  registerButtonText: { 
-    fontSize: 18, 
-    fontWeight: 'bold', 
-    color: '#FFFFFF', 
-    marginRight: 8 
+  registerButtonText: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginRight: 8,
   },
-  footerContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    paddingBottom: 20, 
-    marginTop: 'auto' 
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 20,
+    marginTop: 'auto',
   },
-  footerText: { 
-    fontSize: 15, 
-    color: '#64748B' 
+  footerText: {
+    fontSize: 15,
   },
-  footerLink: { 
-    fontSize: 15, 
-    fontWeight: 'bold', 
-    color: '#3B82F6' 
-  }
+  footerLink: {
+    fontSize: 15,
+    fontWeight: '800',
+  },
 });
+

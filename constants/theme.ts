@@ -5,21 +5,41 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#10B981'; // Emerald
+const tintColorDark = '#34D399'; // Emerald (dark mode)
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#0F172A',
+    mutedText: '#64748B',
+    background: '#F8FAFC',
+    surface: '#FFFFFF',
+    surface2: '#F1F5F9',
+    border: '#E2E8F0',
+    brand: '#10B981',
+    brandSoft: '#ECFDF5',
+    accent: '#3B82F6',
+    success: '#10B981',
+    warning: '#F59E0B',
+    danger: '#EF4444',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F8FAFC',
+    mutedText: '#94A3B8',
+    background: '#0B1220',
+    surface: '#0F172A',
+    surface2: '#111827',
+    border: '#1F2937',
+    brand: '#34D399',
+    brandSoft: '#064E3B',
+    accent: '#60A5FA',
+    success: '#34D399',
+    warning: '#FBBF24',
+    danger: '#F87171',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

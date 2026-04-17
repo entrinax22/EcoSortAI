@@ -9,7 +9,7 @@ type IconMapping = Record<
   SymbolViewProps["name"],
   ComponentProps<typeof MaterialIcons>["name"]
 >;
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -22,6 +22,7 @@ const MAPPING = {
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   "chevron.left": "chevron-left",
+  "arrow.right": "arrow-forward",
   "camera.fill": "camera-alt",
   "arrow.3.trianglepath": "recycling",
   leaf: "eco",
@@ -33,6 +34,10 @@ const MAPPING = {
   qrcode: "qr-code-scanner",
   "checkmark.circle.fill": "check-circle",
   "star.fill": "star",
+  "gift.fill": "card-giftcard",
+  "trophy.fill": "emoji-events",
+  "envelope.fill": "mail",
+  "lock.fill": "lock",
   "shield.fill": "security",
   globe: "public",
   "lightbulb.fill": "lightbulb",

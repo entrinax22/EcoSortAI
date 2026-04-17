@@ -4,6 +4,8 @@ import { router } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 // --- Mock Data ---
 const WASTE_TYPES = [
@@ -22,9 +24,11 @@ const RECENT_ACTIVITY = [
 export default function HomeScreen() {
   // Authentication ready state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const theme = useColorScheme() ?? 'light';
+  const c = Colors[theme];
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: c.background }]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
         {/* Vibrant Header Section */}
@@ -160,7 +164,7 @@ export default function HomeScreen() {
 
         </View>
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 }
 
