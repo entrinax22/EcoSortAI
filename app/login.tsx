@@ -64,7 +64,7 @@ export default function LoginScreen() {
             </View>
             <View style={styles.brandTextContainer}>
               <ThemedText style={[styles.brandTitle, { color: c.brand }]}>
-                EcoSmart
+                TaponRewards
               </ThemedText>
               <View
                 style={[
