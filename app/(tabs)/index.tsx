@@ -1,114 +1,192 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
-import { router } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
+import { useAuth } from "@/hooks/use-auth";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { router } from "expo-router";
+import React from "react";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 // --- Mock Data ---
 const WASTE_TYPES = [
-  { id: "recyclable", name: "Recyclable", icon: "arrow.3.trianglepath", color: "#3B82F6", bgColor: "#DBEAFE", count: 186 },
-  { id: "organic", name: "Organic", icon: "leaf", color: "#10B981", bgColor: "#D1FAE5", count: 42 },
-  { id: "hazardous", name: "Hazardous", icon: "exclamationmark.triangle", color: "#EF4444", bgColor: "#FEE2E2", count: 8 },
-  { id: "electronic", name: "E-Waste", icon: "cpu", color: "#F59E0B", bgColor: "#FEF3C7", count: 11 },
+  {
+    id: "recyclable",
+    name: "Recyclable",
+    icon: "arrow.3.trianglepath",
+    color: "#3B82F6",
+    bgColor: "#DBEAFE",
+    count: 186,
+  },
+  {
+    id: "organic",
+    name: "Organic",
+    icon: "leaf",
+    color: "#10B981",
+    bgColor: "#D1FAE5",
+    count: 42,
+  },
+  {
+    id: "hazardous",
+    name: "Hazardous",
+    icon: "exclamationmark.triangle",
+    color: "#EF4444",
+    bgColor: "#FEE2E2",
+    count: 8,
+  },
+  {
+    id: "electronic",
+    name: "E-Waste",
+    icon: "cpu",
+    color: "#F59E0B",
+    bgColor: "#FEF3C7",
+    count: 11,
+  },
 ];
 
 const RECENT_ACTIVITY = [
-  { id: 1, item: "Plastic Water Bottle", category: "Recyclable", time: "2m ago", icon: "arrow.3.trianglepath", color: "#3B82F6", bgColor: "#DBEAFE", points: "+10" },
-  { id: 2, item: "Banana Peel", category: "Organic", time: "15m ago", icon: "leaf", color: "#10B981", bgColor: "#D1FAE5", points: "+5" },
-  { id: 3, item: "Old Batteries", category: "Hazardous", time: "1h ago", icon: "exclamationmark.triangle", color: "#EF4444", bgColor: "#FEE2E2", points: "+20" },
+  {
+    id: 1,
+    item: "Plastic Water Bottle",
+    category: "Recyclable",
+    time: "2m ago",
+    icon: "arrow.3.trianglepath",
+    color: "#3B82F6",
+    bgColor: "#DBEAFE",
+    points: "+10",
+  },
+  {
+    id: 2,
+    item: "Banana Peel",
+    category: "Organic",
+    time: "15m ago",
+    icon: "leaf",
+    color: "#10B981",
+    bgColor: "#D1FAE5",
+    points: "+5",
+  },
+  {
+    id: 3,
+    item: "Old Batteries",
+    category: "Hazardous",
+    time: "1h ago",
+    icon: "exclamationmark.triangle",
+    color: "#EF4444",
+    bgColor: "#FEE2E2",
+    points: "+20",
+  },
 ];
 
 export default function HomeScreen() {
-  // Authentication ready state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const theme = useColorScheme() ?? 'light';
+  const { user, loading } = useAuth();
+  const theme = useColorScheme() ?? "light";
   const c = Colors[theme];
+
+  if (loading) {
+    return (
+      <ThemedView style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color="#10B981" />
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView style={[styles.container, { backgroundColor: c.background }]}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Vibrant Header Section */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View>
-              <ThemedText style={styles.greeting}>{isAuthenticated ? "Welcome back," : "Hello, Eco Warrior!"}</ThemedText>
-              <ThemedText style={styles.userName}>{isAuthenticated ? "Alex Johnson" : "Let's save the planet"}</ThemedText>
+              <ThemedText style={styles.greeting}>Welcome back,</ThemedText>
+              <ThemedText style={styles.userName}>
+                {user?.full_name || user?.first_name || user?.username || "Eco Warrior"}
+              </ThemedText>
+              {!!user?.role_label && (
+                <View style={styles.roleBadge}>
+                  <ThemedText style={styles.roleText}>{user.role_label}</ThemedText>
+                </View>
+              )}
             </View>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.profileButton}
-              onPress={() => setIsAuthenticated(!isAuthenticated)} // Toggle auth for demo
+              onPress={() => router.push("/profile")}
             >
-              <IconSymbol size={24} name="person.fill" color="#FFF" />
+              <ThemedText style={styles.profileInitial}>
+                {(user?.full_name || user?.username || "?")[0].toUpperCase()}
+              </ThemedText>
             </TouchableOpacity>
           </View>
 
-          {!isAuthenticated ? (
-            /* Auth Promo Card */
-            <View style={styles.authCard}>
-              <View style={styles.authCardIcon}>
-                <IconSymbol size={32} name="star.fill" color="#FFD700" />
-              </View>
-              <View style={styles.authCardContent}>
-                <ThemedText style={styles.authCardTitle}>Join the Movement</ThemedText>
-                <ThemedText style={styles.authCardDesc}>Sign in to track your recycling impact and earn rewards!</ThemedText>
-                <TouchableOpacity style={styles.authButton} onPress={() => router.push('/login')}>
-                  <ThemedText style={styles.authButtonText}>Sign In / Register</ThemedText>
-                </TouchableOpacity>
+          {/* Impact Stats Card */}
+          <View style={styles.impactCard}>
+            <View style={styles.impactHeader}>
+              <ThemedText style={styles.impactTitle}>
+                Your Eco Impact
+              </ThemedText>
+              <View style={styles.streakBadge}>
+                <IconSymbol size={16} name="flame.fill" color="#FF9800" />
+                <ThemedText style={styles.streakText}>12 Day Streak</ThemedText>
               </View>
             </View>
-          ) : (
-            /* Impact Stats Card (Authenticated) */
-            <View style={styles.impactCard}>
-              <View style={styles.impactHeader}>
-                <ThemedText style={styles.impactTitle}>Your Eco Impact</ThemedText>
-                <View style={styles.streakBadge}>
-                  <IconSymbol size={16} name="flame.fill" color="#FF9800" />
-                  <ThemedText style={styles.streakText}>12 Day Streak</ThemedText>
-                </View>
+
+            <View style={styles.statsRow}>
+              <View style={styles.statBox}>
+                <IconSymbol size={28} name="trash.fill" color="#4ADE80" />
+                <ThemedText style={styles.statValue}>247</ThemedText>
+                <ThemedText style={styles.statLabel}>Items Sorted</ThemedText>
               </View>
-              
-              <View style={styles.statsRow}>
-                <View style={styles.statBox}>
-                  <IconSymbol size={28} name="trash.fill" color="#4ADE80" />
-                  <ThemedText style={styles.statValue}>247</ThemedText>
-                  <ThemedText style={styles.statLabel}>Items Sorted</ThemedText>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statBox}>
-                  <IconSymbol size={28} name="leaf.fill" color="#4ADE80" />
-                  <ThemedText style={styles.statValue}>18.5</ThemedText>
-                  <ThemedText style={styles.statLabel}>kg CO₂ Saved</ThemedText>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statBox}>
-                  <IconSymbol size={28} name="checkmark.circle.fill" color="#4ADE80" />
-                  <ThemedText style={styles.statValue}>85%</ThemedText>
-                  <ThemedText style={styles.statLabel}>Accuracy</ThemedText>
-                </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statBox}>
+                <IconSymbol size={28} name="leaf.fill" color="#4ADE80" />
+                <ThemedText style={styles.statValue}>18.5</ThemedText>
+                <ThemedText style={styles.statLabel}>kg CO₂ Saved</ThemedText>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statBox}>
+                <IconSymbol
+                  size={28}
+                  name="checkmark.circle.fill"
+                  color="#4ADE80"
+                />
+                <ThemedText style={styles.statValue}>85%</ThemedText>
+                <ThemedText style={styles.statLabel}>Accuracy</ThemedText>
               </View>
             </View>
-          )}
+          </View>
         </View>
 
         {/* Main Content Area */}
         <View style={styles.mainContent}>
-          
           {/* Vibrant AI Scan Button */}
-          <TouchableOpacity style={styles.scanButton} onPress={() => router.push("/scan")}>
+          <TouchableOpacity
+            style={styles.scanButton}
+            onPress={() => router.push("/scan")}
+          >
             <View style={styles.scanButtonContent}>
               <View style={styles.scanIconContainer}>
                 <IconSymbol size={36} name="camera.fill" color="#FFF" />
               </View>
               <View style={styles.scanTextContainer}>
                 <ThemedText style={styles.scanTitle}>Smart AI Scan</ThemedText>
-                <ThemedText style={styles.scanSubtitle}>Identify & sort waste instantly</ThemedText>
+                <ThemedText style={styles.scanSubtitle}>
+                  Identify & sort waste instantly
+                </ThemedText>
               </View>
               <View style={styles.scanActionIcon}>
-                <IconSymbol size={24} name="chevron.right.circle.fill" color="#FFF" />
+                <IconSymbol
+                  size={24}
+                  name="chevron.right.circle.fill"
+                  color="#FFF"
+                />
               </View>
             </View>
           </TouchableOpacity>
@@ -116,19 +194,33 @@ export default function HomeScreen() {
           {/* Categories */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <ThemedText style={styles.sectionTitle}>Waste Categories</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                Waste Categories
+              </ThemedText>
               <TouchableOpacity>
                 <ThemedText style={styles.seeAllText}>See All</ThemedText>
               </TouchableOpacity>
             </View>
             <View style={styles.categoriesGrid}>
               {WASTE_TYPES.map((type) => (
-                <TouchableOpacity key={type.id} style={[styles.categoryCard, { backgroundColor: type.bgColor }]}>
+                <TouchableOpacity
+                  key={type.id}
+                  style={[
+                    styles.categoryCard,
+                    { backgroundColor: type.bgColor },
+                  ]}
+                >
                   <View style={styles.categoryIconWrapper}>
                     <IconSymbol size={28} name={type.icon} color={type.color} />
                   </View>
-                  <ThemedText style={[styles.categoryCount, { color: type.color }]}>{type.count}</ThemedText>
-                  <ThemedText style={styles.categoryName}>{type.name}</ThemedText>
+                  <ThemedText
+                    style={[styles.categoryCount, { color: type.color }]}
+                  >
+                    {type.count}
+                  </ThemedText>
+                  <ThemedText style={styles.categoryName}>
+                    {type.name}
+                  </ThemedText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -141,27 +233,50 @@ export default function HomeScreen() {
               {RECENT_ACTIVITY.map((activity, index) => (
                 <View key={activity.id}>
                   <View style={styles.activityItem}>
-                    <View style={[styles.activityIcon, { backgroundColor: activity.bgColor }]}>
-                      <IconSymbol size={22} name={activity.icon} color={activity.color} />
+                    <View
+                      style={[
+                        styles.activityIcon,
+                        { backgroundColor: activity.bgColor },
+                      ]}
+                    >
+                      <IconSymbol
+                        size={22}
+                        name={activity.icon}
+                        color={activity.color}
+                      />
                     </View>
                     <View style={styles.activityDetails}>
-                      <ThemedText style={styles.activityTitle}>{activity.item}</ThemedText>
+                      <ThemedText style={styles.activityTitle}>
+                        {activity.item}
+                      </ThemedText>
                       <View style={styles.activityMeta}>
-                        <ThemedText style={[styles.activityCategory, { color: activity.color }]}>{activity.category}</ThemedText>
+                        <ThemedText
+                          style={[
+                            styles.activityCategory,
+                            { color: activity.color },
+                          ]}
+                        >
+                          {activity.category}
+                        </ThemedText>
                         <ThemedText style={styles.activityDot}>•</ThemedText>
-                        <ThemedText style={styles.activityTime}>{activity.time}</ThemedText>
+                        <ThemedText style={styles.activityTime}>
+                          {activity.time}
+                        </ThemedText>
                       </View>
                     </View>
                     <View style={styles.pointsBadge}>
-                      <ThemedText style={styles.pointsText}>{activity.points}</ThemedText>
+                      <ThemedText style={styles.pointsText}>
+                        {activity.points}
+                      </ThemedText>
                     </View>
                   </View>
-                  {index < RECENT_ACTIVITY.length - 1 && <View style={styles.activityDivider} />}
+                  {index < RECENT_ACTIVITY.length - 1 && (
+                    <View style={styles.activityDivider} />
+                  )}
                 </View>
               ))}
             </View>
           </View>
-
         </View>
       </ScrollView>
     </ThemedView>
@@ -171,7 +286,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC", // Light grayish blue background
+    backgroundColor: "#F8FAFC",
+  },
+  centered: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollContent: {
     paddingBottom: 40,
@@ -201,63 +320,34 @@ const styles = StyleSheet.create({
     color: "#F8FAFC",
     marginTop: 4,
   },
+  roleBadge: {
+    marginTop: 6,
+    backgroundColor: "rgba(52, 211, 153, 0.18)",
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
+    alignSelf: "flex-start",
+  },
+  roleText: {
+    color: "#4ADE80",
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.4,
+  },
   profileButton: {
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#1E293B",
+    backgroundColor: "#1E3A5F",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
     borderColor: "#334155",
   },
-  authCard: {
-    backgroundColor: "#3B82F6",
-    borderRadius: 24,
-    padding: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#3B82F6",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  authCardIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-  },
-  authCardContent: {
-    flex: 1,
-  },
-  authCardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#FFF",
-    marginBottom: 4,
-  },
-  authCardDesc: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.9)",
-    marginBottom: 12,
-    lineHeight: 18,
-  },
-  authButton: {
-    backgroundColor: "#FFF",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignSelf: "flex-start",
-  },
-  authButtonText: {
-    color: "#3B82F6",
-    fontWeight: "bold",
-    fontSize: 14,
+  profileInitial: {
+    color: "#4ADE80",
+    fontSize: 22,
+    fontWeight: "900",
   },
   impactCard: {
     backgroundColor: "#1E293B",
@@ -429,6 +519,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.03,
     shadowRadius: 10,
     elevation: 3,
+    marginBottom: 40,
   },
   activityItem: {
     flexDirection: "row",

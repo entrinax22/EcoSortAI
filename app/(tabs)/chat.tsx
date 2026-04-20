@@ -7,21 +7,21 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
-export default function RewardsScreen() {
+export default function ChatScreen() {
   const theme = useColorScheme() ?? "light";
   const c = Colors[theme];
 
   return (
     <ThemedView style={[styles.container, { backgroundColor: c.background }]}>
-      <BrandHeader title="Rewards" subtitle="Earn points, redeem perks" icon="trophy.fill" />
+      <BrandHeader title="AI Assistant" subtitle="Smart eco guidance" icon="brain" />
       <View style={styles.centered}>
         <View style={[styles.iconWrap, { backgroundColor: c.brandSoft }]}>
-          <IconSymbol size={48} name="trophy.fill" color={c.brand} />
+          <IconSymbol size={48} name="brain" color={c.brand} />
         </View>
         <ThemedText style={[styles.title, { color: c.text }]}>Coming Soon</ThemedText>
         <ThemedText style={[styles.sub, { color: c.mutedText }]}>
-          The Rewards system is currently under development.{"\n"}
-          Earn points for every waste collection soon!
+          The AI Assistant feature is currently under development.{"\n"}
+          Stay tuned for smart recycling guidance!
         </ThemedText>
         <View style={[styles.badge, { backgroundColor: c.brandSoft }]}>
           <IconSymbol size={14} name="clock.fill" color={c.brand} />

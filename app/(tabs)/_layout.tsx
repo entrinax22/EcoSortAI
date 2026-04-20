@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -20,7 +20,7 @@ export default function TabLayout() {
         tabBarShowLabel: false, // Removing labels for a cleaner, modern look
         tabBarStyle: {
           position: "absolute",
-          bottom: Platform.OS === 'ios' ? 32 : 24, // Adjust bottom margin based on platform
+          bottom: Platform.OS === "ios" ? 32 : 24, // Adjust bottom margin based on platform
           left: 24,
           right: 24,
           backgroundColor: c.surface,
@@ -53,10 +53,10 @@ export default function TabLayout() {
                 },
               ]}
             >
-              <IconSymbol 
-                size={26} 
-                name="house.fill" 
-                color={focused ? c.brand : c.mutedText} 
+              <IconSymbol
+                size={26}
+                name="house.fill"
+                color={focused ? c.brand : c.mutedText}
               />
             </View>
           ),
@@ -101,7 +101,8 @@ export default function TabLayout() {
                   shadowColor: focused ? c.brand : c.accent,
                   borderColor: c.surface,
                 },
-              ]}>
+              ]}
+            >
               <IconSymbol size={32} name="camera.fill" color="#FFFFFF" />
             </View>
           ),
@@ -123,15 +124,19 @@ export default function TabLayout() {
                 },
               ]}
             >
-              <IconSymbol size={26} name="trophy.fill" color={focused ? c.brand : c.mutedText} />
+              <IconSymbol
+                size={26}
+                name="trophy.fill"
+                color={focused ? c.brand : c.mutedText}
+              />
             </View>
           ),
         }}
       />
       <Tabs.Screen
-        name="impact"
+        name="chat"
         options={{
-          title: "Impact",
+          title: "Messages",
           tabBarIcon: ({ focused }) => (
             <View
               style={[
@@ -144,10 +149,10 @@ export default function TabLayout() {
                 },
               ]}
             >
-              <IconSymbol 
-                size={26} 
-                name="leaf.fill" 
-                color={focused ? c.brand : c.mutedText} 
+              <IconSymbol
+                size={26}
+                name="message.fill"
+                color={focused ? c.brand : c.mutedText}
               />
             </View>
           ),

@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,10 +15,13 @@ import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { login } from "@/services/auth";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const theme = useColorScheme() ?? "light";
   const c = Colors[theme];
@@ -31,7 +35,17 @@ export default function LoginScreen() {
     [c.warning, theme],
   );
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    setError(null);
+    setLoading(true);
+    const { error: apiError } = await login({ email, password });
+    setLoading(false);
+
+    if (apiError) {
+      setError(apiError);
+      return;
+    }
+
     router.replace("/");
   };
 
@@ -177,16 +191,30 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
+          {error && (
+            <ThemedText style={[styles.errorText, { color: c.danger }]}>
+              {error}
+            </ThemedText>
+          )}
+
           <TouchableOpacity
             style={[
               styles.loginButton,
               { backgroundColor: c.brand, shadowColor: c.brand },
+              loading && { opacity: 0.7 },
             ]}
             onPress={handleLogin}
             activeOpacity={0.9}
+            disabled={loading}
           >
-            <ThemedText style={styles.loginButtonText}>Sign In</ThemedText>
-            <IconSymbol size={20} name="arrow.right" color="#FFF" />
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <>
+                <ThemedText style={styles.loginButtonText}>Sign In</ThemedText>
+                <IconSymbol size={20} name="arrow.right" color="#FFF" />
+              </>
+            )}
           </TouchableOpacity>
 
           <View style={styles.dividerContainer}>
@@ -421,5 +449,10 @@ const styles = StyleSheet.create({
   footerLink: {
     fontSize: 15,
     fontWeight: "800",
+  },
+  errorText: {
+    fontSize: 14,
+    marginBottom: 12,
+    textAlign: "center",
   },
 });
